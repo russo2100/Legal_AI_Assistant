@@ -50,8 +50,8 @@ def setup_logging(log_level: str = "INFO", log_file: str = "logs/app.log") -> No
     console_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
     root_logger.addHandler(console_handler)
 
-    # Файловый обработчик с ротацией
-    file_handler = RotatingFileHandler(log_file, maxBytes=10 * 1024 * 1024, backupCount=5, encoding="utf-8")
+    # Файловый обработчик с ротацией (UTF-8 с BOM для Windows)
+    file_handler = RotatingFileHandler(log_file, maxBytes=10 * 1024 * 1024, backupCount=5, encoding="utf-8-sig")
     file_handler.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
     root_logger.addHandler(file_handler)
 

@@ -8,6 +8,7 @@
 import logging
 import sys
 import os
+import io
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -15,13 +16,18 @@ from dotenv import load_dotenv
 from src.graph.workflow import get_compiled_graph
 from src.utils.logging_config import setup_logging
 
-# Загрузка переменных окружения
-load_dotenv()
+# Загрузка переменных окружения с перезаписью
+load_dotenv(override=True)
 
 # Установка UTF-8 для Windows
 if sys.platform == "win32":
     try:
         os.system("chcp 65001 >nul 2>&1")
+    except:
+        pass
+    # Перекодировка stdout для поддержки UTF-8
+    try:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
     except:
         pass
 

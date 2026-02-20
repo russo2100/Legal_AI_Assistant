@@ -92,7 +92,7 @@ class CodeIndexer:
                     id SERIAL PRIMARY KEY,
                     code_id INTEGER REFERENCES codes(id) ON DELETE CASCADE,
                     text TEXT NOT NULL,
-                    embedding vector(1024),
+                    embedding vector(384),
                     article_number TEXT,
                     metadata JSONB DEFAULT '{}',
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -212,6 +212,7 @@ class CodeIndexer:
 
         # Векторизация и сохранение чанков
         chunk_count = 0
+        import json
         for i, chunk in enumerate(chunks):
             try:
                 embedding = self.embedder.embed_text(chunk["text"])
@@ -227,7 +228,7 @@ class CodeIndexer:
                             chunk["text"],
                             embedding,
                             chunk["article_number"],
-                            {"source": title, "chunk_index": i},
+                            json.dumps({"source": title, "chunk_index": i}),
                         ),
                     )
                     chunk_count += 1
@@ -275,12 +276,23 @@ def main() -> None:
     """CLI для индексации кодексов."""
     import argparse
 
+    from dotenv import load_dotenv
+    load_dotenv(override=True)
+
     parser = argparse.ArgumentParser(description="Индексация кодексов в pgvector")
     parser.add_argument("--codes", default="data/codes", help="Путь к директории с кодексами")
     parser.add_argument("--type", dest="code_type", default=None, help="Тип кодекса (опционально)")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO)
+
+    # UTF-8 для Windows
+    import sys, io
+    if sys.platform == "win32":
+        try:
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+        except:
+            pass
 
     indexer = CodeIndexer()
     try:
