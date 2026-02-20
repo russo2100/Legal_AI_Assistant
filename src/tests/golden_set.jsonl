@@ -1,0 +1,10 @@
+{"query": "Статья 330 ГК РФ неустойка", "expected_law_type": "гражданское", "expected_norms": ["ГК РФ Статья 330"]}
+{"query": "Дело А40-123456/2024 арбитраж", "expected_law_type": "арбитражное", "expected_cases": ["А40-123456/2024"]}
+{"query": "Штраф КоАП нарушение ПДД", "expected_law_type": "административное", "expected_norms": ["КоАП"]}
+{"query": "ГПК иск судебный приказ", "expected_law_type": "гражданский процесс", "expected_norms": ["ГПК"]}
+{"query": "Договор поставки обязательства", "expected_law_type": "гражданское", "expected_norms": ["ГК РФ Статья 420"]}
+{"query": "Взыскание задолженности по договору", "expected_law_type": "гражданское", "expected_norms": ["ГК"]}
+{"query": "АПК арбитражный суд kad.arbitr.ru", "expected_law_type": "арбитражное", "expected_cases": []}
+{"query": "Неустойка пеня статья 330 ГК", "expected_law_type": "гражданское", "expected_norms": ["ГК РФ Статья 330"]}
+{"query": "Расторжение договора аренда", "expected_law_type": "гражданское", "expected_norms": ["ГК"]}
+{"query": "Убытки статья 15 ГК", "expected_law_type": "гражданское", "expected_norms": ["ГК"]}
