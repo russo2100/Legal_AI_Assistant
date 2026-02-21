@@ -4,6 +4,13 @@
 
 Интеллектуальный юридический ассистент для поиска нормативных актов и судебной практики РФ с использованием RAG (Retrieval-Augmented Generation) и оркестрацией через LangGraph.
 
+## 📌 Новое: Руководства по настройке RAG
+
+- ⚡ **Быстрый старт:** [`QUICKSTART.md`](QUICKSTART.md)
+- 📖 **Полная инструкция:** [`docs/SETUP_GUIDE.md`](docs/SETUP_GUIDE.md)
+- 🔗 **Интеграция источников:** [`docs/DATA_SOURCES_INTEGRATION.md`](docs/DATA_SOURCES_INTEGRATION.md)
+- 📊 **Отчет о реализации:** [`docs/RAG_IMPLEMENTATION_REPORT.md`](docs/RAG_IMPLEMENTATION_REPORT.md)
+
 ## 🚀 Быстрый старт
 
 ### 1. Установка зависимостей
@@ -27,11 +34,19 @@ Copy-Item .env.example .env
 
 # Заполните .env следующими переменными:
 # OPENROUTER_API_KEY=ваш_ключ
+# PERPLEXITY_API_KEY=ваш_ключ_fallback
 # DATABASE_URL=postgresql://user:pass@localhost:5432/yurik_db
 ```
 
+**Важно:** Для отказоустойчивости настройте оба LLM-провайдера:
+- **OpenRouter** — основной провайдер
+- **Perplexity** — fallback при недоступности основного
+
+📄 **Подробно:** см. [`docs/llm-fallback-system.md`](docs/llm-fallback-system.md)
+
 ### 3. Запуск
 
+#### CLI версия (консоль)
 ```bash
 # Запуск агента с запросом
 python src/main.py "Статья 330 ГК РФ неустойка"
@@ -43,11 +58,41 @@ pytest src/tests -v
 python src/rag/indexer.py --codes data/codes
 ```
 
+#### Dashboard (веб-интерфейс)
+```bash
+# Терминал 1: Запуск API сервера
+python -m src.api.server
+
+# Терминал 2: Запуск фронтенда
+cd frontend
+npm install
+npm run dev
+```
+
+Веб-интерфейс откроется на `http://localhost:3000`
+
+---
+
+## 🖥️ Dashboard
+
+Веб-интерфейс в стиле 1С с поиском и двухколоночным отображением результатов.
+
+**Компоненты:**
+- **Поисковая строка** — ввод юридического запроса
+- **Левая колонка** — результаты поиска
+- **Правая колонка** — детальная информация о выбранном результате
+- **Боковая панель** — история запросов
+
+📄 **Подробно:** см. [`frontend/README.md`](frontend/README.md)
+
 ## 📁 Структура проекта
 
 ```
 yurik/
 ├── src/
+│   ├── api/             # FastAPI сервер для Dashboard
+│   │   ├── server.py    # API endpoints (/api/search, /api/health)
+│   │   └── __init__.py
 │   ├── graph/           # LangGraph workflow
 │   │   ├── state.py     # AgentState (TypedDict)
 │   │   ├── nodes.py     # Узлы графа (classify, search, generate...)
@@ -65,13 +110,25 @@ yurik/
 │   │   └── prompts.py   # Jinja2 шаблоны
 │   ├── prompts/         # Prompt-шаблоны (.j2)
 │   ├── tests/           # Тесты
+│   ├── utils/           # Утилиты
+│   │   └── logging_config.py
 │   └── main.py          # CLI точка входа
+├── frontend/            # React + TypeScript Dashboard
+│   ├── src/
+│   │   ├── api/         # API клиенты
+│   │   ├── components/  # React компоненты
+│   │   ├── hooks/       # Кастомные хуки
+│   │   └── pages/       # Страницы
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.ts
 ├── data/
 │   ├── codes/           # Тексты кодексов
 │   └── cache/           # Кэш парсинга
 ├── docs/                # Документация
 ├── logs/                # Логи приложения
-└── docker/              # Docker конфигурация
+├── docker/              # Docker конфигурация
+└── requirements.txt
 ```
 
 ## 🔧 Архитектура
